@@ -4,12 +4,12 @@ const app = express();
 
 app.use(express.json());
 
--- رسالة ترحيبية إذا فتحت الرابط من المتصفح
+// صفحة ترحيبية للتأكد أن السيرفر يعمل
 app.get('/', (req, res) => {
-    res.send('🤖 AMRORO AI Cloud Backend is Online and Running for Mahmoud & Mohammed!');
+    res.send('🤖 AMRORO AI Cloud Backend is Online for Mahmoud & Mohammed!');
 });
 
--- استقبال أوامر البلجن من روبلوكس
+// استقبال الأوامر من بلجن روبلوكس
 app.post('/api/amroro', async (req, res) => {
     const userPrompt = req.body.prompt;
     try {
@@ -27,15 +27,17 @@ app.post('/api/amroro', async (req, res) => {
                 ]
             })
         });
+        
         const data = await response.json();
         if (data.choices && data.choices[0]) {
-            return res.json({ reply: data.choices[0].message.content });
+            return res.status(200).json({ reply: data.choices[0].message.content });
         } else {
-            return res.json({ reply: "Groq API Error: " + JSON.stringify(data) });
+            return res.status(200).json({ reply: "Groq API Error: " + JSON.stringify(data) });
         }
     } catch (error) {
         return res.status(500).json({ error: error.message });
     }
 });
 
+// تصدير التطبيق ليعمل على Vercel بدون أخطاء
 module.exports = app;
