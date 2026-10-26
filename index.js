@@ -18,7 +18,7 @@ app.post('/api/amroro', async (req, res) => {
                 "Authorization": `Bearer ${process.env.groq_api_key}`
             },
             body: JSON.stringify({
-                model: "llama-3.1-8b-instant",
+                model: "llama3-70b-8192",
                 messages: [
                     { role: "system", content: "You are AMRORO, an expert Roblox Studio AI assistant created by Mahmoud and Mohammed." },
                     { role: "user", content: userPrompt }
