@@ -4,12 +4,10 @@ const app = express();
 
 app.use(express.json());
 
-// صفحة ترحيبية للتأكد أن السيرفر يعمل
 app.get('/', (req, res) => {
     res.send('🤖 AMRORO AI Cloud Backend is Online for Mahmoud & Mohammed!');
 });
 
-// استقبال الأوامر من بلجن روبلوكس
 app.post('/api/amroro', async (req, res) => {
     const userPrompt = req.body.prompt;
     try {
@@ -20,7 +18,7 @@ app.post('/api/amroro', async (req, res) => {
                 "Authorization": `Bearer ${process.env.groq_api_key}`
             },
             body: JSON.stringify({
-                model: "llama-3.3-70b-versatile",
+                model: "llama3-70b-8192", -- تم تغيير النموذج إلى النموذج المدعوم والمتاح في Groq
                 messages: [
                     { role: "system", content: "You are AMRORO, an expert Roblox Studio AI assistant created by Mahmoud and Mohammed." },
                     { role: "user", content: userPrompt }
@@ -39,5 +37,4 @@ app.post('/api/amroro', async (req, res) => {
     }
 });
 
-// تصدير التطبيق ليعمل على Vercel بدون أخطاء
 module.exports = app;
