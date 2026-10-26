@@ -5,7 +5,7 @@ const app = express();
 app.use(express.json());
 
 app.get('/', (req, res) => {
-    res.send('🤖 AMRORO AI Cloud Backend is Online for Mahmoud & Mohammed!');
+    res.send('AMRORO AI Cloud Backend is Online for Mahmoud & Mohammed!');
 });
 
 app.post('/api/amroro', async (req, res) => {
@@ -18,7 +18,7 @@ app.post('/api/amroro', async (req, res) => {
                 "Authorization": `Bearer ${process.env.groq_api_key}`
             },
             body: JSON.stringify({
-                model: "llama3-70b-8192", -- تم تغيير النموذج إلى النموذج المدعوم والمتاح في Groq
+                model: "llama3-70b-8192",
                 messages: [
                     { role: "system", content: "You are AMRORO, an expert Roblox Studio AI assistant created by Mahmoud and Mohammed." },
                     { role: "user", content: userPrompt }
