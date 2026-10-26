@@ -4,6 +4,12 @@ const app = express();
 
 app.use(express.json());
 
+-- رسالة ترحيبية إذا فتحت الرابط من المتصفح
+app.get('/', (req, res) => {
+    res.send('🤖 AMRORO AI Cloud Backend is Online and Running for Mahmoud & Mohammed!');
+});
+
+-- استقبال أوامر البلجن من روبلوكس
 app.post('/api/amroro', async (req, res) => {
     const userPrompt = req.body.prompt;
     try {
