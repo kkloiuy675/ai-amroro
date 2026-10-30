@@ -19,7 +19,7 @@ app.post('/generate', async (req, res) => {
         if (questionnaireAnswers && Array.isArray(questionnaireAnswers)) {
             for (const qa of questionnaireAnswers) {
                 if (qa && qa.answer && typeof qa.answer === 'string' && qa.answer.trim() !== "") {
-                    finalPrompt += `\n- ${qa.question}: ${qa.answer}`;
+                    finalPrompt += "\n- " + qa.question + ": " + qa.answer;
                 }
             }
         }
@@ -29,7 +29,7 @@ app.post('/generate', async (req, res) => {
             return res.status(200).json({ code: '-- Error: API Key is missing in Vercel Environment Variables.' });
         }
 
-        const apiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+        const apiResponse = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + apiKey, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -40,7 +40,7 @@ app.post('/generate', async (req, res) => {
         });
 
         const data = await apiResponse.json();
-        const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '-- No response from Gemini';
+        const text = data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0] && data.candidates[0].content.parts[0].text ? data.candidates[0].content.parts[0].text : '-- No response from Gemini';
         
         let match = text.match(/```lua([\s\S]*?)```/) || text.match(/```([\s\S]*?)```/);
         let finalCode = match ? match[1] : text;
@@ -57,7 +57,7 @@ app.post('/chat', async (req, res) => {
         const { message } = req.body || {};
         const apiKey = process.env.gemini_api_key || process.env.GEMINI_API_KEY || process.env.groq_api_key;
         
-        const apiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+        const apiResponse = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + apiKey, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -66,7 +66,7 @@ app.post('/chat', async (req, res) => {
         });
 
         const data = await apiResponse.json();
-        const replyText = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Hello! I am AMRORO AI.';
+        const replyText = data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0] && data.candidates[0].content.parts[0].text ? data.candidates[0].content.parts[0].text : 'Hello! I am AMRORO AI.';
         return res.status(200).json({ reply: replyText });
     } catch (error) {
         return res.status(200).json({ reply: 'Chat Error: ' + (error.message || 'Unknown') });
@@ -79,9 +79,9 @@ app.post('/auto-fix', async (req, res) => {
         const { prompt, fullOutputLog } = req.body || {};
         const apiKey = process.env.gemini_api_key || process.env.GEMINI_API_KEY || process.env.groq_api_key;
         
-        const fixPrompt = `Fix the following Roblox Luau script error based on the context.\nError Log: ${fullOutputLog}\nContext/Prompt: ${prompt}\nReturn ONLY the fixed valid Luau code inside a code block ```lua ... ```.`;
+        const fixPrompt = "Fix the following Roblox Luau script error based on the context.\nError Log: " + (fullOutputLog || "") + "\nContext/Prompt: " + (prompt || "") + "\nReturn ONLY the fixed valid Luau code inside a code block ```lua ... ```.";
 
-        const apiResponse = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+        const apiResponse = await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=" + apiKey, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -90,7 +90,7 @@ app.post('/auto-fix', async (req, res) => {
         });
 
         const data = await apiResponse.json();
-        const text = data.candidates?.[0]?.content?.parts?.[0]?.text || '-- No fix generated';
+        const text = data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts && data.candidates[0].content.parts[0] && data.candidates[0].content.parts[0].text ? data.candidates[0].content.parts[0].text : '-- No fix generated';
         
         let match = text.match(/```lua([\s\S]*?)```/) || text.match(/```([\s\S]*?)```/);
         let finalCode = match ? match[1] : text;
